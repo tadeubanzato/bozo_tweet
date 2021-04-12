@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 from heapq import nlargest
 
 # Authenticate to Telegram
-telegram_token = '1793615020:AAETkLnHht_rTf2Q4db0E3GAvz1GTBag-78'
-chat_id = '-1001488988830' # Channel ID
+telegram_token = 'TELEGRAM API TOKEN'
+chat_id = 'CHAT ID' # Channel ID
 bot = telegram.Bot(token=telegram_token)
 
 #######----------- WEEKLY REPORT -----------#######
