@@ -14,12 +14,12 @@ from datetime import datetime, timedelta
 from heapq import nlargest
 
 # Authenticate to Twitter
-auth = tweepy.OAuthHandler("fqEJTntllMFjsBMKgRz0P8IVG", "AIvitbiAl8IFHWjzDWmimfAoVwu94hbB2OC7pFQPbm8BIIqvv6")
-auth.set_access_token("1349545148158455812-qReIle2zXNUZRE44jsYQyQbRJQjT78","cDQ2QNrDEQAQdF0laWB0FaDOKDQSB6smWBnrJsESfYNjp")
+auth = tweepy.OAuthHandler("CONSUMER_KEY", "CONSUMER_SECRET")
+auth.set_access_token("ACCESS_TOKEN","ACCESS_TOKEN_SECRET")
 
 # Authenticate to Telegram
-telegram_token = '1793615020:AAETkLnHht_rTf2Q4db0E3GAvz1GTBag-78'
-chat_id = '-1001488988830' # Channel ID
+telegram_token = 'TELEGRAM API TOKEN'
+chat_id = 'CHAT ID' # Channel ID
 bot = telegram.Bot(token=telegram_token)
 
 def on_status(keywords,api):
