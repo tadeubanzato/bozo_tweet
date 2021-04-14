@@ -1,9 +1,11 @@
+# tweet_to_telegram.py
+# -*- coding: utf-8 -*-
+
 import logging
 import requests
 import urllib.request
 import json
 import tweepy
-# import telegram_send
 import time
 import pandas as pd
 from pandas import DataFrame
@@ -23,11 +25,12 @@ chat_id = 'CHAT ID' # Channel ID
 bot = telegram.Bot(token=telegram_token)
 
 def on_status(keywords,api):
-    # odiosos = keywords
+    # loop para cada um dos usuários definidos na lista
     for odio in keywords:
         tweet = api.user_timeline(id=odio,count=0)[0]
         name = tweet.user.name
-        ##### 10 seconds CountDown timer for next user in the list
+
+        ##### Contagem regressica para o próximo tweet
         t=(10 * 1)
         while t:
             mins, secs = divmod(t, 60)
@@ -36,37 +39,28 @@ def on_status(keywords,api):
             time.sleep(1)
             t -= 1
 
-        user = tweet.user.screen_name
+        user = tweet.user.screen_name # Pega nome do usuário direto da API do Twitter
         teweetid = tweet.id
-        message = f'https://twitter.com/{user}/status/{str(teweetid)}'
-        # teste = 'https://api.telegram.org/bot1793615020:AAETkLnHht_rTf2Q4db0E3GAvz1GTBag-78/sendMessage?chat_id=-1001488988830&text=test'
-        image = tweet.user.profile_image_url
-        image = image.replace("normal","400x400")
-        source = tweet.source
+        message = f'https://twitter.com/{user}/status/{str(teweetid)}' # Monta o link do post do twitter
+        image = tweet.user.profile_image_url # Pega o link da imagem do twitter do usuário
+        image = image.replace("normal","400x400") # MAnipula a URL da foto para pegar mesma url da foto com mais qualidade
+        source = tweet.source # Pega a fonte do post se foi um iPhone ou Android, por exemplo
         source = source.replace('for','para')
-        followers = '{:,}'.format(tweet.user.followers_count)
-        date = tweet.created_at
+        followers = '{:,}'.format(tweet.user.followers_count) # Pega o numero de followers que o usuário tem
+        date = tweet.created_at # Pega a data de quando o tweet foi postado
         likes = myFloat = '{:,}'.format(tweet.favorite_count)
         retweets = '{:,}'.format(tweet.retweet_count)
 
-        ##### Add icons to specific names
-        if 'jair' in name.lower():
-            name = f'{name} 💩'
-        if 'eduardo' in name.lower():
-            name = f'{name} 🍌'
-
-        ##### Open CSV File to verify if Tweet was already posted based on TweetID
+        ##### Abre o CSV File e verifica se o tweet ja foi salvo
         dfopen = pd.read_csv('gabinete_do_mal.csv', index_col=0)
         if not dfopen['tweetid'].eq(teweetid).any():
             bot.send_photo(chat_id, image)
             bot.sendMessage(chat_id=chat_id, text=f"Último tweet por {name} enviado pelo 📱 {source} (da presidência)\n\n🐄 Followers: {followers}\n🐂 Data: {date}\n🥛 Likes: {likes}\n🐮 Retweets: {retweets}\n\nhttps://twitter.com/{tweet.user.screen_name}/status/{str(tweet.id)}")
-            # telegram_send.send(images=[image.replace('normal','200x200')])
-            # telegram_send.send(messages=[f'Último tweet por {name} enviado pelo 📱 {source} (da presidência)\n\n🐄 Followers: {followers}\n🔥 Data: {date}\n🐮 Likes: {likes}\n🐂 Retweets: {retweets}\n\nhttps://twitter.com/{tweet.user.screen_name}/status/{str(tweet.id)}'])
             dictposts = {'username':[f'@{user}'], 'tweetid':[teweetid], 'name':[name], 'date':[date], 'likes':[likes],'retweets':[retweets],'plinks':[message]}
 
-            ##### Build DataFrame with Pandas and Store on CSV
+            ##### Constroi o DataFrame com Pandas e salva no CSV
             df = pd.DataFrame(dictposts)
-            df.to_csv('gabinete_do_mal.csv', mode='a', index = False, header = False)
+            df.to_csv('tweets_salvos.csv', mode='a', index = False, header = False)
         else:
             print('not added', end="\r")
 
@@ -93,4 +87,5 @@ def main(keywords):
             time.sleep(1)
             t -= 1
 if __name__ == "__main__":
+    # Deinir os usuários do twitter que vc quer verificar
     main(['twitter01','twitter02','twitter03'])
