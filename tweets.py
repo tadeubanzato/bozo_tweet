@@ -93,4 +93,4 @@ def main(keywords):
             time.sleep(1)
             t -= 1
 if __name__ == "__main__":
-    main(['jairbolsonaro','CarlosBolsonaro','FlavioBolsonaro','BolsonaroSP','CarlaZambelli38','Biakicis','gen_heleno','AbrahamWeint','DamaresAlves','depheliolopes','opropriolavo','GeneralMourao','rsallesmma','fabiofaria'])
+    main(['twitter01','twitter02','twitter03'])
